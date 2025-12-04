@@ -5,61 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔍 Пошук платежу LiqPay</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
             background: #f5f5f5;
         }
+        
         .form-container {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        
         h2 {
             color: #333;
             margin-bottom: 20px;
+            font-size: 22px;
         }
+        
         .form-group {
             margin-bottom: 15px;
         }
+        
         label {
             display: block;
             margin-bottom: 5px;
             color: #555;
             font-weight: bold;
+            font-size: 14px;
         }
+        
         input, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box;
             font-size: 14px;
+            -webkit-appearance: none;
+            appearance: none;
         }
+        
+        select {
+            background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 10px center;
+            padding-right: 30px;
+        }
+        
         input:focus, select:focus {
             outline: none;
             border-color: #7ED321;
         }
+        
         .date-range {
             display: flex;
             gap: 10px;
             align-items: center;
         }
+        
         .date-range input {
             flex: 1;
         }
+        
         .date-range span {
             color: #999;
             font-weight: normal;
+            flex-shrink: 0;
         }
+        
         .date-hint {
             font-size: 12px;
             color: #999;
             margin-top: 3px;
         }
+        
         .search-type {
             display: flex;
             gap: 15px;
@@ -67,25 +91,32 @@
             padding: 15px;
             background: #f8f9fa;
             border-radius: 4px;
+            flex-wrap: wrap;
         }
+        
         .search-type label {
             display: flex;
             align-items: center;
             font-weight: normal;
             cursor: pointer;
             margin-bottom: 0;
+            white-space: nowrap;
         }
+        
         .search-type input[type="radio"] {
             width: auto;
             margin-right: 5px;
             cursor: pointer;
         }
+        
         .search-field {
             display: none;
         }
+        
         .search-field.active {
             display: block;
         }
+        
         button {
             width: 100%;
             padding: 12px;
@@ -98,38 +129,194 @@
             margin-top: 10px;
             font-weight: bold;
         }
+        
         button:hover {
             background: #6BC116;
         }
+        
         button:disabled {
             background: #ccc;
             cursor: not-allowed;
         }
+        
         .result {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
             display: none;
         }
-        .result.success {
+        
+        .result.show {
+            display: block;
+        }
+        
+        .result-header {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .result-header.success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        .result.error {
+        
+        .result-header.error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        
+        .payment-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .payment-card:hover {
+            border-color: #7ED321;
+            box-shadow: 0 2px 8px rgba(126, 211, 33, 0.2);
+        }
+        
+        .payment-card.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .payment-card.failed {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .payment-card.pending {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .payment-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .payment-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .payment-status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .payment-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .payment-info {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .payment-info p {
+            margin: 5px 0;
+            word-break: break-word;
+        }
+        
+        .payment-info strong {
+            color: #333;
+            display: inline-block;
+            min-width: 100px;
+        }
+        
         .loading {
             text-align: center;
+            padding: 20px;
             color: #666;
         }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #7ED321;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .error-message {
             color: #dc3545;
             font-size: 12px;
             margin-top: 3px;
             display: none;
+        }
+        
+        /* Мобільна адаптація */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .date-range {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .date-range span {
+                display: none;
+            }
+            
+            .search-type {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px;
+            }
+            
+            input, select, button {
+                font-size: 16px; /* Запобігає zoom на iOS */
+            }
+            
+            .payment-info strong {
+                min-width: 80px;
+                font-size: 13px;
+            }
+            
+            .payment-info {
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .form-container {
+                padding: 15px;
+            }
+            
+            h2 {
+                font-size: 18px;
+            }
+            
+            .payment-card {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -208,7 +395,7 @@
                     id="phone" 
                     name="phone" 
                     placeholder="380501234567 або 0501234567"
-                    pattern="[\+]?[0-9]{10,13}"
+                    pattern="[0-9]{9,12}"
                     title="Формат: 380501234567 або 0501234567"
                 >
             </div>
@@ -294,6 +481,50 @@
             return true;
         }
         
+        // Функція для отримання назви статусу українською
+        function getStatusText(status) {
+            const statuses = {
+                'success': 'Успішно',
+                'failure': 'Помилка',
+                'error': 'Помилка',
+                'reversed': 'Повернуто',
+                'subscribed': 'Підписка',
+                'unsubscribed': 'Відписка',
+                'processing': 'Обробка',
+                'sandbox': 'Тест',
+                'wait_accept': 'Очікування',
+                'wait_card': 'Очікування картки'
+            };
+            return statuses[status] || status;
+        }
+        
+        // Функція для отримання класу статусу
+        function getStatusClass(status) {
+            if (status === 'success' || status === 'subscribed') return 'success';
+            if (status === 'failure' || status === 'error' || status === 'reversed') return 'failed';
+            return 'pending';
+        }
+        
+        // Функція для відображення одного платежу
+        function renderPayment(payment, merchantName) {
+            const statusClass = getStatusClass(payment.status);
+            const statusText = getStatusText(payment.status);
+            
+            return `
+                <div class="payment-card ${statusClass}">
+                    <div class="payment-status ${statusClass}">${statusText}</div>
+                    <div class="payment-info">
+                        <p><strong>Payment ID:</strong> ${payment.payment_id}</p>
+                        <p><strong>Order ID:</strong> ${payment.order_id}</p>
+                        <p><strong>Сума:</strong> ${payment.amount} ${payment.currency}</p>
+                        ${payment.sender_phone ? `<p><strong>Телефон:</strong> ${payment.sender_phone}</p>` : ''}
+                        ${payment.create_date ? `<p><strong>Дата:</strong> ${payment.create_date}</p>` : ''}
+                        ${payment.err_description ? `<p><strong>Помилка:</strong> ${payment.err_description}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
         formatDateInput(dateFromInput);
         formatDateInput(dateToInput);
         
@@ -329,9 +560,15 @@
                 return;
             }
             
-            resultDiv.className = 'result';
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<div class="loading">⏳ Шукаємо платіж...</div>';
+            const merchantName = merchant === 'merchant1' ? 'i60788791483 (Concert.ua/Init)' : 'i56318722651 (Concert.ua/ТОВ "Білетик")';
+            
+            resultDiv.className = 'result show';
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>⏳ Шукаємо платіж...</div>
+                </div>
+            `;
             submitBtn.disabled = true;
             
             try {
@@ -351,24 +588,31 @@
                 
                 const data = await response.json();
                 
-                if (response.ok && data.payment_id) {
-                    resultDiv.className = 'result success';
-                    resultDiv.innerHTML = `
-                        <strong>✅ Платіж знайдено!</strong><br><br>
-                        <strong>Мерчант:</strong> ${merchant === 'merchant1' ? 'i60788791483 (Concert.ua/Init)' : 'i56318722651 (Concert.ua/ТОВ "Білетик")'}<br>
-                        <strong>Payment ID:</strong> ${data.payment_id}<br>
-                        <strong>Order ID:</strong> ${data.order_id}<br>
-                        <strong>Статус:</strong> ${data.status}<br>
-                        <strong>Сума:</strong> ${data.amount} ${data.currency}<br>
-                        ${data.sender_phone ? `<strong>Телефон:</strong> ${data.sender_phone}<br>` : ''}
-                        ${data.err_description ? `<strong>Помилка:</strong> ${data.err_description}` : ''}
-                    `;
+                if (response.ok) {
+                    // Перевіряємо чи це масив платежів чи один платіж
+                    const payments = Array.isArray(data) ? data : [data];
+                    
+                    if (payments.length > 0 && payments[0].payment_id) {
+                        const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
+                        
+                        resultDiv.innerHTML = `
+                            <div class="result-header success">
+                                ✅ Знайдено платежів: ${payments.length}
+                            </div>
+                            ${paymentsHtml}
+                        `;
+                    } else {
+                        throw new Error('Платіж не знайдено');
+                    }
                 } else {
                     throw new Error(data.error || 'Платіж не знайдено');
                 }
             } catch (error) {
-                resultDiv.className = 'result error';
-                resultDiv.innerHTML = `<strong>❌ Помилка:</strong> ${error.message}`;
+                resultDiv.innerHTML = `
+                    <div class="result-header error">
+                        ❌ Помилка: ${error.message}
+                    </div>
+                `;
             } finally {
                 submitBtn.disabled = false;
             }
