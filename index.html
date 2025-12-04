@@ -94,6 +94,7 @@
             flex-wrap: wrap;
         }
         
+        /* ✅ ВИПРАВЛЕНІ СТИЛІ ДЛЯ РАДІО-КНОПОК */
         .search-type label {
             display: flex;
             align-items: center;
@@ -101,12 +102,62 @@
             cursor: pointer;
             margin-bottom: 0;
             white-space: nowrap;
+            position: relative;
+            padding-left: 28px;
+            user-select: none;
         }
         
         .search-type input[type="radio"] {
-            width: auto;
-            margin-right: 5px;
+            position: absolute;
+            opacity: 0;
             cursor: pointer;
+            width: 0;
+            height: 0;
+        }
+        
+        /* Кастомна радіо-кнопка */
+        .search-type label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        /* Внутрішня точка */
+        .search-type label::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #7ED321;
+            transition: all 0.3s;
+        }
+        
+        /* Стан при виборі */
+        .search-type input[type="radio"]:checked + label::before,
+        .search-type label:has(input[type="radio"]:checked)::before {
+            border-color: #7ED321;
+        }
+        
+        .search-type input[type="radio"]:checked + label::after,
+        .search-type label:has(input[type="radio"]:checked)::after {
+            transform: translateY(-50%) scale(1);
+        }
+        
+        /* Hover ефект */
+        .search-type label:hover::before {
+            border-color: #7ED321;
         }
         
         .search-field {
@@ -131,7 +182,7 @@
         }
         
         button:hover {
-            background: #54cd59;
+            background: #388e3c;
         }
         
         button:disabled {
