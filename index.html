@@ -635,24 +635,29 @@
                 });
                 
                 const data = await response.json();
-                
-                if (response.ok) {
-                    // Перевіряємо чи це масив платежів чи один платіж
-                    const payments = Array.isArray(data) ? data : [data];
-                    
-                    if (payments.length > 0 && payments[0].payment_id) {
-                        const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
-                        
-                        resultDiv.innerHTML = `
-                            <div class="result-header success">
-                                ✅ Знайдено платежів: ${payments.length}
-                            </div>
-                            ${paymentsHtml}
-                        `;
-                    } else {
-                        throw new Error('Платіж не знайдено');
-                    }
-                } else {
+
+if (response.ok) {
+    // Перевіряємо чи є помилка
+    if (data.error) {
+        throw new Error(data.error);
+    }
+    
+    // data вже є масивом платежів
+    const payments = Array.isArray(data) ? data : [data];
+    
+    if (payments.length > 0 && payments[0].payment_id) {
+        const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
+        
+        resultDiv.innerHTML = `
+            <div class="result-header success">
+                ✅ Знайдено платежів: ${payments.length}
+            </div>
+            ${paymentsHtml}
+        `;
+    } else {
+        throw new Error('Платіж не знайдено');
+    }
+} else {
                     throw new Error(data.error || 'Платіж не знайдено');
                 }
             } catch (error) {
