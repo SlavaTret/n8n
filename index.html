@@ -94,7 +94,6 @@
             flex-wrap: wrap;
         }
         
-        /* ✅ ВИПРАВЛЕНІ СТИЛІ ДЛЯ РАДІО-КНОПОК */
         .search-type label {
             display: flex;
             align-items: center;
@@ -115,7 +114,6 @@
             height: 0;
         }
         
-        /* Кастомна радіо-кнопка */
         .search-type label::before {
             content: '';
             position: absolute;
@@ -130,11 +128,10 @@
             transition: all 0.3s;
         }
         
-        /* Внутрішня точка */
         .search-type label::after {
             content: '';
             position: absolute;
-            left: 6px;
+            left: 8px;
             top: 50%;
             transform: translateY(-50%) scale(0);
             width: 8px;
@@ -147,7 +144,7 @@
         /* Стан при виборі */
         .search-type input[type="radio"]:checked + label::before,
         .search-type label:has(input[type="radio"]:checked)::before {
-            border-color: #7ED321;
+            border-color: #4caf51;
         }
         
         .search-type input[type="radio"]:checked + label::after,
