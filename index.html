@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Пошук платежу LiqPay</title>
+    <title>🔍 Пошук платежу LiqPay</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,6 +39,15 @@
             box-sizing: border-box;
             font-size: 14px;
         }
+        input:focus {
+            outline: none;
+            border-color: #7ED321;
+        }
+        .date-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 3px;
+        }
         button {
             width: 100%;
             padding: 12px;
@@ -49,6 +58,7 @@
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
+            font-weight: bold;
         }
         button:hover {
             background: #6BC116;
@@ -77,6 +87,12 @@
             text-align: center;
             color: #666;
         }
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 3px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -84,18 +100,44 @@
         <h2>🔍 Пошук платежу LiqPay</h2>
         <form id="searchForm">
             <div class="form-group">
-                <label for="order_id">Order ID:</label>
-                <input type="text" id="order_id" name="order_id" placeholder="512719762" required>
+                <label for="order_id">ID замовлення:</label>
+                <input 
+                    type="text" 
+                    id="order_id" 
+                    name="order_id" 
+                    placeholder="512719762" 
+                    required
+                    pattern="[0-9]+"
+                    title="Тільки цифри"
+                >
             </div>
             
             <div class="form-group">
-                <label for="date_from">Дата від (DD.MM.YYYY):</label>
-                <input type="text" id="date_from" name="date_from" placeholder="01.12.2025" required>
+                <label for="date_from">Дата замовлення від (DD.MM.YYYY):</label>
+                <input 
+                    type="text" 
+                    id="date_from" 
+                    name="date_from" 
+                    placeholder="01.12.2025" 
+                    maxlength="10"
+                    required
+                >
+                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
+                <div class="error-message" id="error_date_from">Невірний формат дати</div>
             </div>
             
             <div class="form-group">
-                <label for="date_to">Дата до (DD.MM.YYYY):</label>
-                <input type="text" id="date_to" name="date_to" placeholder="04.12.2025" required>
+                <label for="date_to">Дата замовлення до (DD.MM.YYYY):</label>
+                <input 
+                    type="text" 
+                    id="date_to" 
+                    name="date_to" 
+                    placeholder="04.12.2025" 
+                    maxlength="10"
+                    required
+                >
+                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
+                <div class="error-message" id="error_date_to">Невірний формат дати</div>
             </div>
             
             <button type="submit" id="submitBtn">Знайти платіж</button>
@@ -105,19 +147,97 @@
     </div>
 
     <script>
+        // ЗАМІСТЬ ЦЕЙ URL на свій Webhook URL з n8n
+        const WEBHOOK_URL = 'https://n8n.virus.ua/webhook/liqpay-search';
+        
         const form = document.getElementById('searchForm');
         const resultDiv = document.getElementById('result');
         const submitBtn = document.getElementById('submitBtn');
+        const dateFromInput = document.getElementById('date_from');
+        const dateToInput = document.getElementById('date_to');
         
-        // ЗАМІСТЬ ЦЕЙ URL на свій Webhook URL з n8n
-        const WEBHOOK_URL = 'https://твій-n8n.com/webhook/liqpay-search';
+        // Функція для автоматичного форматування дати
+        function formatDateInput(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Видаляємо все крім цифр
+                
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '.' + value.slice(2);
+                }
+                if (value.length >= 5) {
+                    value = value.slice(0, 5) + '.' + value.slice(5, 9);
+                }
+                
+                e.target.value = value;
+            });
+        }
+        
+        // Функція валідації дати
+        function isValidDate(dateString) {
+            const regex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+            const match = dateString.match(regex);
+            
+            if (!match) return false;
+            
+            const day = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10);
+            const year = parseInt(match[3], 10);
+            
+            if (month < 1 || month > 12) return false;
+            if (day < 1 || day > 31) return false;
+            if (year < 1900 || year > 2100) return false;
+            
+            // Перевірка кількості днів у місяці
+            const daysInMonth = new Date(year, month, 0).getDate();
+            if (day > daysInMonth) return false;
+            
+            return true;
+        }
+        
+        // Застосовуємо форматування до обох полів дати
+        formatDateInput(dateFromInput);
+        formatDateInput(dateToInput);
+        
+        // Валідація при втраті фокусу
+        dateFromInput.addEventListener('blur', function() {
+            const errorDiv = document.getElementById('error_date_from');
+            if (this.value && !isValidDate(this.value)) {
+                errorDiv.style.display = 'block';
+                this.style.borderColor = '#dc3545';
+            } else {
+                errorDiv.style.display = 'none';
+                this.style.borderColor = '#ddd';
+            }
+        });
+        
+        dateToInput.addEventListener('blur', function() {
+            const errorDiv = document.getElementById('error_date_to');
+            if (this.value && !isValidDate(this.value)) {
+                errorDiv.style.display = 'block';
+                this.style.borderColor = '#dc3545';
+            } else {
+                errorDiv.style.display = 'none';
+                this.style.borderColor = '#ddd';
+            }
+        });
         
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const orderId = document.getElementById('order_id').value;
-            const dateFrom = document.getElementById('date_from').value;
-            const dateTo = document.getElementById('date_to').value;
+            const dateFrom = dateFromInput.value;
+            const dateTo = dateToInput.value;
+            
+            // Валідація перед відправкою
+            if (!isValidDate(dateFrom)) {
+                alert('Невірний формат дати "від". Використовуйте формат ДД.ММ.РРРР');
+                return;
+            }
+            
+            if (!isValidDate(dateTo)) {
+                alert('Невірний формат дати "до". Використовуйте формат ДД.ММ.РРРР');
+                return;
+            }
             
             // Показуємо loading
             resultDiv.className = 'result';
