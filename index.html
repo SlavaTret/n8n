@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошук платежу LiqPay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #7ED321;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #6BC116;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>🔍 Пошук платежу LiqPay</h2>
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="order_id">Order ID:</label>
+                <input type="text" id="order_id" name="order_id" placeholder="512719762" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_from">Дата від (DD.MM.YYYY):</label>
+                <input type="text" id="date_from" name="date_from" placeholder="01.12.2025" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_to">Дата до (DD.MM.YYYY):</label>
+                <input type="text" id="date_to" name="date_to" placeholder="04.12.2025" required>
+            </div>
+            
+            <button type="submit" id="submitBtn">Знайти платіж</button>
+        </form>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const resultDiv = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // ЗАМІСТЬ ЦЕЙ URL на свій Webhook URL з n8n
+        const WEBHOOK_URL = 'https://твій-n8n.com/webhook/liqpay-search';
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const orderId = document.getElementById('order_id').value;
+            const dateFrom = document.getElementById('date_from').value;
+            const dateTo = document.getElementById('date_to').value;
+            
+            // Показуємо loading
+            resultDiv.className = 'result';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loading">⏳ Шукаємо платіж...</div>';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        date_from: dateFrom,
+                        date_to: dateTo,
+                    }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.payment_id) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ Платіж знайдено!</strong><br><br>
+                        <strong>Payment ID:</strong> ${data.payment_id}<br>
+                        <strong>Order ID:</strong> ${data.order_id}<br>
+                        <strong>Статус:</strong> ${data.status}<br>
+                        <strong>Сума:</strong> ${data.amount} ${data.currency}<br>
+                        ${data.err_description ? `<strong>Помилка:</strong> ${data.err_description}` : ''}
+                    `;
+                } else {
+                    throw new Error(data.error || 'Платіж не знайдено');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>❌ Помилка:</strong> ${error.message}`;
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
