@@ -642,8 +642,8 @@ if (response.ok) {
         throw new Error(data.error);
     }
     
-    // data вже є масивом платежів
-    const payments = Array.isArray(data) ? data : [data];
+    // ✅ ВИПРАВЛЕНО: Отримуємо масив з ключа "payments"
+    const payments = data.payments || [];
     
     if (payments.length > 0 && payments[0].payment_id) {
         const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
@@ -658,8 +658,8 @@ if (response.ok) {
         throw new Error('Платіж не знайдено');
     }
 } else {
-                    throw new Error(data.error || 'Платіж не знайдено');
-                }
+    throw new Error(data.error || 'Платіж не знайдено');
+}
             } catch (error) {
                 resultDiv.innerHTML = `
                     <div class="result-header error">
