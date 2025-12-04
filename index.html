@@ -43,10 +43,48 @@
             outline: none;
             border-color: #7ED321;
         }
+        .date-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .date-range input {
+            flex: 1;
+        }
+        .date-range span {
+            color: #999;
+            font-weight: normal;
+        }
         .date-hint {
             font-size: 12px;
             color: #999;
             margin-top: 3px;
+        }
+        .search-type {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .search-type label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+        .search-type input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .search-field {
+            display: none;
+        }
+        .search-field.active {
+            display: block;
         }
         button {
             width: 100%;
@@ -109,44 +147,82 @@
             </div>
             
             <div class="form-group">
+                <label>Період пошуку:</label>
+                <div class="date-range">
+                    <input 
+                        type="text" 
+                        id="date_from" 
+                        name="date_from" 
+                        placeholder="01.12.2025" 
+                        maxlength="10"
+                        required
+                    >
+                    <span>—</span>
+                    <input 
+                        type="text" 
+                        id="date_to" 
+                        name="date_to" 
+                        placeholder="31.12.2025" 
+                        maxlength="10"
+                        required
+                    >
+                </div>
+                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
+                <div class="error-message" id="error_dates">Невірний формат дати</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Шукати за:</label>
+                <div class="search-type">
+                    <label>
+                        <input type="radio" name="search_type" value="order_id" checked>
+                        ID замовлення
+                    </label>
+                    <label>
+                        <input type="radio" name="search_type" value="phone">
+                        Телефоном
+                    </label>
+                    <label>
+                        <input type="radio" name="search_type" value="amount">
+                        Сумою
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group search-field active" id="field_order_id">
                 <label for="order_id">ID замовлення:</label>
                 <input 
                     type="text" 
                     id="order_id" 
                     name="order_id" 
                     placeholder="512719762" 
-                    required
                     pattern="[0-9]+"
                     title="Тільки цифри"
                 >
             </div>
             
-            <div class="form-group">
-                <label for="date_from">Дата замовлення від (DD.MM.YYYY):</label>
+            <div class="form-group search-field" id="field_phone">
+                <label for="phone">Номер телефону:</label>
                 <input 
                     type="text" 
-                    id="date_from" 
-                    name="date_from" 
-                    placeholder="01.12.2025" 
-                    maxlength="10"
-                    required
+                    id="phone" 
+                    name="phone" 
+                    placeholder="+380501234567 або 0501234567"
+                    pattern="[\+]?[0-9]{10,13}"
+                    title="Формат: +380501234567 або 0501234567"
                 >
-                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
-                <div class="error-message" id="error_date_from">Невірний формат дати</div>
             </div>
             
-            <div class="form-group">
-                <label for="date_to">Дата замовлення до (DD.MM.YYYY):</label>
+            <div class="form-group search-field" id="field_amount">
+                <label for="amount">Сума платежу:</label>
                 <input 
                     type="text" 
-                    id="date_to" 
-                    name="date_to" 
-                    placeholder="04.12.2025" 
-                    maxlength="10"
-                    required
+                    id="amount" 
+                    name="amount" 
+                    placeholder="1399.2"
+                    pattern="[0-9]+(\.[0-9]{1,2})?"
+                    title="Формат: 1399.2 або 1399"
                 >
-                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
-                <div class="error-message" id="error_date_to">Невірний формат дати</div>
             </div>
             
             <button type="submit" id="submitBtn">Знайти платіж</button>
@@ -156,7 +232,6 @@
     </div>
 
     <script>
-        // ЗАМІСТЬ ЦЕЙ URL на свій Webhook URL з n8n
         const WEBHOOK_URL = 'https://n8n.virus.ua/webhook/liqpay-search';
         
         const form = document.getElementById('searchForm');
@@ -164,6 +239,23 @@
         const submitBtn = document.getElementById('submitBtn');
         const dateFromInput = document.getElementById('date_from');
         const dateToInput = document.getElementById('date_to');
+        const searchTypeRadios = document.querySelectorAll('input[name="search_type"]');
+        
+        // Перемикання полів пошуку
+        searchTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.search-field').forEach(field => {
+                    field.classList.remove('active');
+                    const input = field.querySelector('input');
+                    if (input) input.required = false;
+                });
+                
+                const activeField = document.getElementById(`field_${this.value}`);
+                activeField.classList.add('active');
+                const activeInput = activeField.querySelector('input');
+                if (activeInput) activeInput.required = true;
+            });
+        });
         
         // Функція для автоматичного форматування дати
         function formatDateInput(input) {
@@ -205,48 +297,35 @@
         formatDateInput(dateFromInput);
         formatDateInput(dateToInput);
         
-        dateFromInput.addEventListener('blur', function() {
-            const errorDiv = document.getElementById('error_date_from');
-            if (this.value && !isValidDate(this.value)) {
-                errorDiv.style.display = 'block';
-                this.style.borderColor = '#dc3545';
-            } else {
-                errorDiv.style.display = 'none';
-                this.style.borderColor = '#ddd';
-            }
-        });
-        
-        dateToInput.addEventListener('blur', function() {
-            const errorDiv = document.getElementById('error_date_to');
-            if (this.value && !isValidDate(this.value)) {
-                errorDiv.style.display = 'block';
-                this.style.borderColor = '#dc3545';
-            } else {
-                errorDiv.style.display = 'none';
-                this.style.borderColor = '#ddd';
-            }
-        });
-        
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const merchant = document.getElementById('merchant').value;
-            const orderId = document.getElementById('order_id').value;
             const dateFrom = dateFromInput.value;
             const dateTo = dateToInput.value;
+            const searchType = document.querySelector('input[name="search_type"]:checked').value;
             
             if (!merchant) {
                 alert('Оберіть мерчанта');
                 return;
             }
             
-            if (!isValidDate(dateFrom)) {
-                alert('Невірний формат дати "від". Використовуйте формат ДД.ММ.РРРР');
+            if (!isValidDate(dateFrom) || !isValidDate(dateTo)) {
+                alert('Невірний формат дати. Використовуйте формат ДД.ММ.РРРР');
                 return;
             }
             
-            if (!isValidDate(dateTo)) {
-                alert('Невірний формат дати "до". Використовуйте формат ДД.ММ.РРРР');
+            let searchValue;
+            if (searchType === 'order_id') {
+                searchValue = document.getElementById('order_id').value;
+            } else if (searchType === 'phone') {
+                searchValue = document.getElementById('phone').value;
+            } else if (searchType === 'amount') {
+                searchValue = document.getElementById('amount').value;
+            }
+            
+            if (!searchValue) {
+                alert('Заповніть поле пошуку');
                 return;
             }
             
@@ -263,7 +342,8 @@
                     },
                     body: JSON.stringify({
                         merchant: merchant,
-                        order_id: orderId,
+                        search_type: searchType,
+                        search_value: searchValue,
                         date_from: dateFrom,
                         date_to: dateTo,
                     }),
@@ -280,6 +360,7 @@
                         <strong>Order ID:</strong> ${data.order_id}<br>
                         <strong>Статус:</strong> ${data.status}<br>
                         <strong>Сума:</strong> ${data.amount} ${data.currency}<br>
+                        ${data.sender_phone ? `<strong>Телефон:</strong> ${data.sender_phone}<br>` : ''}
                         ${data.err_description ? `<strong>Помилка:</strong> ${data.err_description}` : ''}
                     `;
                 } else {
