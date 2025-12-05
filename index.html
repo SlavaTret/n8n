@@ -311,20 +311,28 @@
         }
         
         .payment-card:hover {
-            border-color: #28a745;
             box-shadow: 0 2px 8px rgba(126, 211, 33, 0.2);
         }
         
         .payment-card.success {
             border-left: 4px solid #28a745;
         }
+        .payment-card.success:hover {
+            border-color: #28a745;
+        }
         
         .payment-card.failed {
             border-left: 4px solid #dc3545;
         }
+        .payment-card.failed:hover {
+            border-color: #dc3545;
+        }
         
         .payment-card.pending {
             border-left: 4px solid #ffc107;
+        }
+        .payment-card.pending:hover {
+            border-color: #ffc107;
         }
         
         .payment-status {
