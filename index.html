@@ -481,9 +481,9 @@
             <div class="form-group">
                 <label for="merchant">Мерчант:</label>
                 <select id="merchant" name="merchant" required>
-                    <option value="">Оберіть мерчанта</option>
-                    <option value="merchant1">i60788791483 (Concert.ua/Init)</option>
+                    <option value="merchant1" selected>i60788791483 (Concert.ua/Init)</option>
                     <option value="merchant2">i56318722651 (Concert.ua/ТОВ "Білетик")</option>
+                    <option value="merchant3">i75634154909 (v-Ticket 3S/Init)</option>
                 </select>
             </div>
             
@@ -579,6 +579,7 @@
 
     <script>
         const PASSWORD_HASH = '39f7fa0d14cb59a63e2ffe0382deebe19450566242569dc51f77cce8345fe76a';
+        
         async function hashPassword(password) {
             const encoder = new TextEncoder();
             const data = encoder.encode(password);
@@ -621,7 +622,6 @@
         const dateToInput = document.getElementById('date_to');
         const searchTypeRadios = document.querySelectorAll('input[name="search_type"]');
         
-        // ✅ Функція для швидкого вибору дат
         function setDateRange(type) {
             const today = new Date();
             let dateFrom, dateTo;
@@ -665,7 +665,6 @@
             });
         });
         
-        // ✅ Покращене форматування дати з підтримкою Backspace
         function formatDateInput(input) {
             input.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
@@ -821,7 +820,12 @@
                 return;
             }
             
-            const merchantName = merchant === 'merchant1' ? 'i60788791483 (Concert.ua/Init)' : 'i56318722651 (Concert.ua/ТОВ "Білетик")';
+            const merchantNames = {
+                'merchant1': 'i60788791483 (Concert.ua/Init)',
+                'merchant2': 'i56318722651 (Concert.ua/ТОВ "Білетик")',
+                'merchant3': 'i75634154909 (v-Ticket 3S/Init)'
+            };
+            const merchantName = merchantNames[merchant];
             
             resultDiv.className = 'result show';
             resultDiv.innerHTML = `
