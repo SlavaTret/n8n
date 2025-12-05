@@ -17,6 +17,66 @@
             background: #f5f5f5;
         }
         
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .auth-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .auth-box h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 22px;
+        }
+        
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .auth-box button {
+            width: 100%;
+            padding: 12px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .auth-box button:hover {
+            background: #388e3c;
+        }
+        
+        .auth-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        
         .form-container {
             background: white;
             padding: 25px;
@@ -84,6 +144,33 @@
             margin-top: 3px;
         }
         
+        .date-shortcuts {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .date-shortcuts button {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: normal;
+            margin-top: 0;
+            transition: all 0.2s;
+        }
+        
+        .date-shortcuts button:hover {
+            background: #e9ecef;
+            border-color: #7ED321;
+        }
+        
         .search-type {
             display: flex;
             gap: 15px;
@@ -141,7 +228,6 @@
             transition: all 0.3s;
         }
         
-        /* Стан при виборі */
         .search-type input[type="radio"]:checked + label::before,
         .search-type label:has(input[type="radio"]:checked)::before {
             border-color: #4caf51;
@@ -152,7 +238,6 @@
             transform: translateY(-50%) scale(1);
         }
         
-        /* Hover ефект */
         .search-type label:hover::before {
             border-color: #7ED321;
         }
@@ -309,7 +394,6 @@
             display: none;
         }
         
-        /* Мобільна адаптація */
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -333,6 +417,14 @@
                 display: none;
             }
             
+            .date-shortcuts {
+                flex-direction: column;
+            }
+            
+            .date-shortcuts button {
+                width: 100%;
+            }
+            
             .search-type {
                 flex-direction: column;
                 gap: 10px;
@@ -340,7 +432,7 @@
             }
             
             input, select, button {
-                font-size: 16px; /* Запобігає zoom на iOS */
+                font-size: 16px;
             }
             
             .payment-info strong {
@@ -369,7 +461,16 @@
     </style>
 </head>
 <body>
-    <div class="form-container">
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-box">
+            <h2>🔐 Вхід</h2>
+            <input type="password" id="authPassword" placeholder="Введіть пароль" autocomplete="off">
+            <button onclick="checkPassword()">Увійти</button>
+            <div class="auth-error" id="authError">Невірний пароль</div>
+        </div>
+    </div>
+
+    <div class="form-container" id="mainContent" style="display: none;">
         <h2>🔍 Пошук платежу LiqPay</h2>
         <form id="searchForm">
             <div class="form-group">
@@ -402,8 +503,13 @@
                         required
                     >
                 </div>
-                <div class="date-hint">Формат: ДД.ММ.РРРР</div>
-                <div class="error-message" id="error_dates">Невірний формат дати</div>
+                <div class="date-shortcuts">
+                    <button type="button" onclick="setDateRange('today')">📅 За сьогодні</button>
+                    <button type="button" onclick="setDateRange('yesterday')">📆 За вчора</button>
+                    <button type="button" onclick="setDateRange('week')">📊 За тиждень</button>
+                </div>
+                <div class="date-hint">Формат: ДД.ММ.РРРР (максимум 7 днів)</div>
+                <div class="error-message" id="error_dates">Період не може перевищувати 7 днів</div>
             </div>
             
             <div class="form-group">
@@ -467,6 +573,42 @@
     </div>
 
     <script>
+        // ✅ Захист паролем (SHA-256)
+        const PASSWORD_HASH = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'; // "123"
+        
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        async function checkPassword() {
+            const password = document.getElementById('authPassword').value;
+            const hash = await hashPassword(password);
+            
+            if (hash === PASSWORD_HASH) {
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                sessionStorage.setItem('auth', 'true');
+            } else {
+                document.getElementById('authError').style.display = 'block';
+                document.getElementById('authPassword').value = '';
+            }
+        }
+        
+        if (sessionStorage.getItem('auth') === 'true') {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+        
+        document.getElementById('authPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
         const WEBHOOK_URL = 'https://n8n.virus.ua/webhook/liqpay-search';
         
         const form = document.getElementById('searchForm');
@@ -476,7 +618,35 @@
         const dateToInput = document.getElementById('date_to');
         const searchTypeRadios = document.querySelectorAll('input[name="search_type"]');
         
-        // Перемикання полів пошуку
+        // ✅ Функція для швидкого вибору дат
+        function setDateRange(type) {
+            const today = new Date();
+            let dateFrom, dateTo;
+            
+            if (type === 'today') {
+                dateFrom = dateTo = today;
+            } else if (type === 'yesterday') {
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                dateFrom = dateTo = yesterday;
+            } else if (type === 'week') {
+                dateFrom = new Date(today);
+                dateFrom.setDate(dateFrom.getDate() - 6);
+                dateTo = today;
+            }
+            
+            dateFromInput.value = formatDateToString(dateFrom);
+            dateToInput.value = formatDateToString(dateTo);
+            document.getElementById('error_dates').style.display = 'none';
+        }
+        
+        function formatDateToString(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+        
         searchTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 document.querySelectorAll('.search-field').forEach(field => {
@@ -492,23 +662,42 @@
             });
         });
         
-        // Функція для автоматичного форматування дати
+        // ✅ Покращене форматування дати з підтримкою Backspace
         function formatDateInput(input) {
             input.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
+                value = value.slice(0, 8);
                 
-                if (value.length >= 2) {
-                    value = value.slice(0, 2) + '.' + value.slice(2);
+                let formatted = '';
+                if (value.length > 0) {
+                    formatted = value.slice(0, 2);
+                }
+                if (value.length >= 3) {
+                    formatted += '.' + value.slice(2, 4);
                 }
                 if (value.length >= 5) {
-                    value = value.slice(0, 5) + '.' + value.slice(5, 9);
+                    formatted += '.' + value.slice(4, 8);
                 }
                 
-                e.target.value = value;
+                e.target.value = formatted;
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace') {
+                    const cursorPos = e.target.selectionStart;
+                    const value = e.target.value;
+                    
+                    if (cursorPos > 0 && value[cursorPos - 1] === '.') {
+                        e.preventDefault();
+                        const newValue = value.slice(0, cursorPos - 2) + value.slice(cursorPos);
+                        e.target.value = newValue;
+                        e.target.setSelectionRange(cursorPos - 2, cursorPos - 2);
+                        e.target.dispatchEvent(new Event('input'));
+                    }
+                }
             });
         }
         
-        // Функція валідації дати
         function isValidDate(dateString) {
             const regex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
             const match = dateString.match(regex);
@@ -529,7 +718,21 @@
             return true;
         }
         
-        // Функція для отримання назви статусу українською
+        function parseDate(dateString) {
+            const [day, month, year] = dateString.split('.').map(Number);
+            return new Date(year, month - 1, day);
+        }
+        
+        function validateDateRange(dateFrom, dateTo) {
+            const from = parseDate(dateFrom);
+            const to = parseDate(dateTo);
+            
+            const diffTime = Math.abs(to - from);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return diffDays <= 7;
+        }
+        
         function getStatusText(status) {
             const statuses = {
                 'success': 'Успішно',
@@ -546,14 +749,12 @@
             return statuses[status] || status;
         }
         
-        // Функція для отримання класу статусу
         function getStatusClass(status) {
             if (status === 'success' || status === 'subscribed') return 'success';
             if (status === 'failure' || status === 'error' || status === 'reversed') return 'failed';
             return 'pending';
         }
         
-        // Функція для відображення одного платежу
         function renderPayment(payment, merchantName) {
             const statusClass = getStatusClass(payment.status);
             const statusText = getStatusText(payment.status);
@@ -590,9 +791,18 @@
             }
             
             if (!isValidDate(dateFrom) || !isValidDate(dateTo)) {
-                alert('Невірний формат дати. Використовуйте формат ДД.ММ.РРРР');
+                document.getElementById('error_dates').textContent = 'Невірний формат дати';
+                document.getElementById('error_dates').style.display = 'block';
                 return;
             }
+            
+            if (!validateDateRange(dateFrom, dateTo)) {
+                document.getElementById('error_dates').textContent = 'Період не може перевищувати 7 днів';
+                document.getElementById('error_dates').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('error_dates').style.display = 'none';
             
             let searchValue;
             if (searchType === 'order_id') {
@@ -636,30 +846,28 @@
                 
                 const data = await response.json();
 
-if (response.ok) {
-    // Перевіряємо чи є помилка
-    if (data.error) {
-        throw new Error(data.error);
-    }
-    
-    // ✅ ВИПРАВЛЕНО: Отримуємо масив з ключа "payments"
-    const payments = data.payments || [];
-    
-    if (payments.length > 0 && payments[0].payment_id) {
-        const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
-        
-        resultDiv.innerHTML = `
-            <div class="result-header success">
-                ✅ Знайдено платежів: ${payments.length}
-            </div>
-            ${paymentsHtml}
-        `;
-    } else {
-        throw new Error('Платіж не знайдено');
-    }
-} else {
-    throw new Error(data.error || 'Платіж не знайдено');
-}
+                if (response.ok) {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    const payments = data.payments || [];
+                    
+                    if (payments.length > 0 && payments[0].payment_id) {
+                        const paymentsHtml = payments.map(payment => renderPayment(payment, merchantName)).join('');
+                        
+                        resultDiv.innerHTML = `
+                            <div class="result-header success">
+                                ✅ Знайдено платежів: ${payments.length}
+                            </div>
+                            ${paymentsHtml}
+                        `;
+                    } else {
+                        throw new Error('Платіж не знайдено');
+                    }
+                } else {
+                    throw new Error(data.error || 'Платіж не знайдено');
+                }
             } catch (error) {
                 resultDiv.innerHTML = `
                     <div class="result-header error">
