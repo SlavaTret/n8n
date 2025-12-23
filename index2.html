@@ -664,7 +664,7 @@
       <button class="modal-close" type="button" aria-label="Закрити" data-close-modal>&times;</button>
     </div>
     <p class="modal-sub">
-      Ми перетелефонуємо, уточнимо замовлення та оформимо доставку Новою поштою або Укрпоштою.
+      Ми перетелефонуємо, уточнимо замовлення та оформимо доставку.
     </p>
 
     <div class="modal-scroll">
@@ -676,10 +676,6 @@
         <div class="form-group">
           <label for="phone">Телефон *</label>
           <input type="tel" id="phone" name="phone" required placeholder="+380...">
-        </div>
-        <div class="form-group">
-          <label for="email">Email (необовʼязково)</label>
-          <input type="email" id="email" name="email" placeholder="example@gmail.com">
         </div>
 
         <div class="form-group">
@@ -721,6 +717,16 @@
           <label>Адреса Укрпошти</label>
           <input type="text" id="ukrCity" placeholder="Місто / населений пункт">
           <textarea id="ukrAddress" placeholder="Вулиця, будинок, індекс або номер відділення Укрпошти"></textarea>
+        </div>
+
+        <!-- Спосіб оплати -->
+        <div class="form-group">
+          <label for="paymentMethod">Спосіб оплати *</label>
+          <select id="paymentMethod" name="paymentMethod" required>
+            <option value="cash_on_delivery" selected>Накладений платіж (оплата при отриманні)</option>
+            <option value="card">Оплата карткою</option>
+            <option value="bank_transfer">Банківський переказ</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -774,6 +780,7 @@
   const ukrBlock = document.getElementById('ukrBlock');
   const ukrCity = document.getElementById('ukrCity');
   const ukrAddress = document.getElementById('ukrAddress');
+  const paymentMethodSelect = document.getElementById('paymentMethod');
 
   function openOrderModal(prefillModel) {
     if (prefillModel && modelSelect) modelSelect.value = prefillModel;
@@ -1052,6 +1059,7 @@
     }
 
     const deliveryMethod = deliveryMethodSelect.value;
+    const paymentMethod = paymentMethodSelect.value;
 
     let deliveryCity = null;
     let deliveryWarehouseOrAddress = null;
@@ -1067,11 +1075,11 @@
     const payload = {
       name,
       phone,
-      email: document.getElementById('email').value.trim() || null,
       model: modelSelect.value || null,
       deliveryMethod,
       deliveryCity,
       deliveryWarehouseOrAddress,
+      paymentMethod,
       message: document.getElementById('message').value.trim() || null,
       page: window.location.href,
       createdAt: new Date().toISOString()
