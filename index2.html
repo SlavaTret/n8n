@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>DOMOTEC Air Fryer – аерофритюрниці MS‑3225 та MS‑3226</title>
-  <meta name="description" content="Аерофритюрниці DOMOTEC Air Fryer MS‑3225 та MS‑3226 зі знижкою. Готування без олії, обʼєм 7–7.6 л, потужність до 4800 Вт. Доставка Новою поштою." />
+  <meta name="description" content="Аерофритюрниці DOMOTEC Air Fryer MS‑3225 та MS‑3226 зі знижкою. Готування без олії, обʼєм 7–7.6 л, потужність до 4800 Вт. Доставка Новою поштою або Укрпоштою." />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="DOMOTEC Air Fryer – зі знижкою">
   <meta property="og:description" content="Дві моделі DOMOTEC Air Fryer: 7 л та 7.6 л. Смачне хрумке без зайвої олії.">
-  <meta property="og:image" content="https://your-domain.com/img/air-fryer-hero.png">
+  <meta property="og:image" content="https://slavatret.github.io/n8n/download.png">
 
   <style>
     :root {
@@ -445,6 +445,37 @@
       gap: 8px;
     }
 
+    /* AUTOCOMPLETE */
+    .autocomplete-wrapper {
+      position: relative;
+    }
+    .autocomplete-list {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin-top: 4px;
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #4b5563;
+      max-height: 190px;
+      overflow-y: auto;
+      font-size: 12px;
+      display: none;
+      z-index: 50;
+    }
+    .autocomplete-item {
+      padding: 6px 9px;
+      cursor: pointer;
+    }
+    .autocomplete-item:hover {
+      background: #111827;
+    }
+    .autocomplete-empty {
+      padding: 6px 9px;
+      color: var(--muted);
+    }
+
     footer {
       padding: 18px 0 26px;
       font-size: 11px;
@@ -512,7 +543,7 @@
 
         <div class="hero-meta">
           <span class="hero-chip">Без олії або з мінімальною кількістю</span>
-          <span class="hero-chip">Доставка Новою поштою</span>
+          <span class="hero-chip">Доставка Новою поштою або Укрпоштою</span>
         </div>
       </div>
 
@@ -619,7 +650,7 @@
         <span><span class="dot"></span> До 90% менше олії</span>
         <span><span class="dot"></span> Хрумка скоринка та соковите всередині</span>
         <span><span class="dot"></span> Знімні кошики – легко мити</span>
-        <span><span class="dot"></span> Доставка Новою поштою по Україні</span>
+        <span><span class="dot"></span> Доставка Новою поштою або Укрпоштою по Україні</span>
       </div>
     </div>
   </section>
@@ -633,7 +664,7 @@
       <button class="modal-close" type="button" aria-label="Закрити" data-close-modal>&times;</button>
     </div>
     <p class="modal-sub">
-      Ми перетелефонуємо, уточнимо замовлення та оформимо доставку Новою поштою.
+      Ми перетелефонуємо, уточнимо замовлення та оформимо доставку Новою поштою або Укрпоштою.
     </p>
 
     <div class="modal-scroll">
@@ -660,19 +691,36 @@
           </select>
         </div>
 
+        <!-- Спосіб доставки -->
         <div class="form-group">
+          <label for="deliveryMethod">Спосіб доставки *</label>
+          <select id="deliveryMethod" name="deliveryMethod" required>
+            <option value="nova_poshta" selected>Нова пошта (відділення)</option>
+            <option value="ukrposhta">Укрпошта</option>
+          </select>
+        </div>
+
+        <!-- Блок Нової пошти -->
+        <div class="form-group" id="npBlock">
           <label>Доставка Новою поштою</label>
           <div class="np-row">
-            <div>
+            <div class="autocomplete-wrapper">
               <input type="text" id="npCity" placeholder="Місто (почніть вводити)" autocomplete="off">
-              <small id="npCityHint" style="color:var(--muted);font-size:11px;">Виберіть місто зі списку.</small>
+              <div id="npCityList" class="autocomplete-list"></div>
+              <small id="npCityHint" style="color:var(--muted);font-size:11px;">Введіть мінімум 2 літери.</small>
             </div>
-            <div>
-              <select id="npWarehouse">
-                <option value="">Спочатку оберіть місто</option>
-              </select>
+            <div class="autocomplete-wrapper">
+              <input type="text" id="npWarehouse" placeholder="Відділення: номер або адреса" autocomplete="off" disabled>
+              <div id="npWarehouseList" class="autocomplete-list"></div>
             </div>
           </div>
+        </div>
+
+        <!-- Блок Укрпошти -->
+        <div class="form-group" id="ukrBlock" style="display:none;">
+          <label>Адреса Укрпошти</label>
+          <input type="text" id="ukrCity" placeholder="Місто / населений пункт">
+          <textarea id="ukrAddress" placeholder="Вулиця, будинок, індекс або номер відділення Укрпошти"></textarea>
         </div>
 
         <div class="form-group">
@@ -690,16 +738,14 @@
   </div>
 </div>
 
-<!-- MODAL DETAILS (для обох моделей) -->
+<!-- MODAL DETAILS -->
 <div class="modal-backdrop" id="detailsModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
     <div class="modal-header">
       <div class="modal-title" id="detailsTitle">Характеристики</div>
       <button class="modal-close" type="button" aria-label="Закрити" data-close-details>&times;</button>
     </div>
-    <div class="modal-scroll" id="detailsContent">
-      <!-- контент вставляється через JS -->
-    </div>
+    <div class="modal-scroll" id="detailsContent"></div>
   </div>
 </div>
 
@@ -723,6 +769,12 @@
   const formStatus = document.getElementById('formStatus');
   const leadForm = document.getElementById('leadForm');
 
+  const deliveryMethodSelect = document.getElementById('deliveryMethod');
+  const npBlock = document.getElementById('npBlock');
+  const ukrBlock = document.getElementById('ukrBlock');
+  const ukrCity = document.getElementById('ukrCity');
+  const ukrAddress = document.getElementById('ukrAddress');
+
   function openOrderModal(prefillModel) {
     if (prefillModel && modelSelect) modelSelect.value = prefillModel;
     orderModal.style.display = 'flex';
@@ -736,7 +788,7 @@
     const html = productKey === 'ms3225'
       ? `
         <p class="modal-sub"><strong>DOMOTEC Air Fryer MS‑3225, 7 л, 3500 Вт</strong></p>
-        <ul style="font-size:13px;color:${'var(--muted)'};margin-bottom:10px;padding-left:18px;">
+        <ul style="font-size:13px;color:var(--muted);margin-bottom:10px;padding-left:18px;">
           <li>Обʼєм кошика: 7 л</li>
           <li>Потужність: 3500 Вт</li>
           <li>Температурний діапазон: 80–200°C</li>
@@ -745,14 +797,13 @@
           <li>Два нагрівальні елементи для рівномірного прогріву</li>
           <li>Корпус: метал / пластик</li>
         </ul>
-        <p style="font-size:13px;color:${'var(--muted)'};">
-          Ідеальна для сімʼї 3–5 осіб: картопля фрі, крильця, овочі, мʼясо. 
-          Готує майже без олії, легко миється завдяки знімним частинам.
+        <p style="font-size:13px;color:var(--muted);">
+          Ідеальна для сімʼї 3–5 осіб. Готує майже без олії, легко миється завдяки знімним частинам.
         </p>
       `
       : `
         <p class="modal-sub"><strong>DOMOTEC Air Fryer MS‑3226, 7.6 л, 4800 Вт</strong></p>
-        <ul style="font-size:13px;color:${'var(--muted)'};margin-bottom:10px;padding-left:18px;">
+        <ul style="font-size:13px;color:var(--muted);margin-bottom:10px;padding-left:18px;">
           <li>Загальний обʼєм: 7.6 л</li>
           <li>Потужність: 4800 Вт</li>
           <li>Дві незалежні секції для різних страв</li>
@@ -762,9 +813,8 @@
           <li>Два нагрівальні елементи</li>
           <li>Корпус: метал / пластик</li>
         </ul>
-        <p style="font-size:13px;color:${'var(--muted)'};">
-          Підходить для 5+ осіб, свят, вечірок. 
-          Можна одночасно готувати мʼясо та гарнір без змішування смаків.
+        <p style="font-size:13px;color:var(--muted);">
+          Підходить для 5+ осіб, свят, вечірок. Можна одночасно готувати мʼясо та гарнір без змішування смаків.
         </p>
       `;
     detailsContent.innerHTML = html;
@@ -801,20 +851,42 @@
     }
   });
 
-  // ====== НОВА ПОШТА API ======
-  const NP_API_KEY = '4caed09a8d94d4237b5edf1cad4533a1'; // <-- свій ключ
+  // Переключення блоків доставки
+  function updateDeliveryBlocks() {
+    const method = deliveryMethodSelect.value;
+    if (method === 'nova_poshta') {
+      npBlock.style.display = '';
+      ukrBlock.style.display = 'none';
+    } else {
+      npBlock.style.display = 'none';
+      ukrBlock.style.display = '';
+    }
+  }
+  deliveryMethodSelect.addEventListener('change', updateDeliveryBlocks);
+  updateDeliveryBlocks();
+
+  // ====== НОВА ПОШТА API + автокомпліт ======
+  const NP_API_KEY = '4caed09a8d94d4237b5edf1cad4533a1';
   const npCityInput = document.getElementById('npCity');
-  const npWarehouseSelect = document.getElementById('npWarehouse');
+  const npCityList = document.getElementById('npCityList');
   const npCityHint = document.getElementById('npCityHint');
-  let npCityRef = null;
+  const npWarehouseInput = document.getElementById('npWarehouse');
+  const npWarehouseList = document.getElementById('npWarehouseList');
+
   let citySearchTimeout = null;
+  let cityOptions = [];
+  let selectedCityRef = null;
+  let warehouseOptions = [];
+
+  function showList(el) { el.style.display = 'block'; }
+  function hideList(el) { el.style.display = 'none'; }
 
   async function searchCities(query) {
     const body = {
       apiKey: NP_API_KEY,
       modelName: "Address",
       calledMethod: "getCities",
-      methodProperties: { FindByString: query, Limit: 20 }
+      methodProperties: { FindByString: query, Limit: 50 }
     };
     const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
       method: "POST",
@@ -830,7 +902,7 @@
       apiKey: NP_API_KEY,
       modelName: "AddressGeneral",
       calledMethod: "getWarehouses",
-      methodProperties: { CityRef: cityRef, Limit: 50 }
+      methodProperties: { CityRef: cityRef, Limit: 200 }
     };
     const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
       method: "POST",
@@ -841,44 +913,128 @@
     return (data && data.data) ? data.data : [];
   }
 
-  npCityInput.addEventListener('input', () => {
-    const q = npCityInput.value.trim();
-    npCityRef = null;
-    npWarehouseSelect.innerHTML = '<option value="">Спочатку оберіть місто</option>';
-    if (q.length < 2) {
-      npCityHint.textContent = 'Введіть мінімум 2 літери.';
+  function renderCitySuggestions(list) {
+    npCityList.innerHTML = '';
+    if (!list.length) {
+      npCityList.innerHTML = '<div class="autocomplete-empty">Місто не знайдено</div>';
+      showList(npCityList);
       return;
     }
-    npCityHint.textContent = 'Шукаємо міста...';
-
-    if (citySearchTimeout) clearTimeout(citySearchTimeout);
-    citySearchTimeout = setTimeout(async () => {
-      try {
-        const cities = await searchCities(q);
-        if (!cities.length) {
-          npCityHint.textContent = 'Місто не знайдено. Перевірте написання.';
-          return;
-        }
-        // Для простоти — беремо перше співпадіння
-        const city = cities[0];
-        npCityRef = city.Ref;
+    list.forEach(city => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.textContent = city.Description;
+      item.dataset.ref = city.Ref;
+      item.addEventListener('click', async () => {
         npCityInput.value = city.Description;
+        selectedCityRef = city.Ref;
+        hideList(npCityList);
         npCityHint.textContent = 'Місто вибрано. Завантажуємо відділення...';
 
-        const whList = await loadWarehouses(npCityRef);
-        npWarehouseSelect.innerHTML = '<option value="">Оберіть відділення</option>';
-        whList.forEach(w => {
-          const opt = document.createElement('option');
-          opt.value = w.Description;
-          opt.textContent = w.Description;
-          npWarehouseSelect.appendChild(opt);
-        });
-        npCityHint.textContent = 'Оберіть відділення зі списку.';
-      } catch (err) {
-        console.error(err);
-        npCityHint.textContent = 'Не вдалося завантажити список міст.';
+        try {
+          warehouseOptions = await loadWarehouses(selectedCityRef);
+          npWarehouseInput.disabled = false;
+          npWarehouseInput.value = '';
+          renderWarehouseSuggestions('');
+          npCityHint.textContent = 'Виберіть відділення або почніть його вводити.';
+        } catch (e) {
+          console.error(e);
+          npCityHint.textContent = 'Не вдалося завантажити відділення.';
+        }
+      });
+      npCityList.appendChild(item);
+    });
+    showList(npCityList);
+  }
+
+  function renderWarehouseSuggestions(filterText) {
+    npWarehouseList.innerHTML = '';
+    if (!warehouseOptions.length) {
+      npWarehouseList.innerHTML = '<div class="autocomplete-empty">Спочатку оберіть місто</div>';
+      showList(npWarehouseList);
+      return;
+    }
+    const q = filterText.toLowerCase();
+    const filtered = warehouseOptions.filter(w =>
+      w.Description.toLowerCase().includes(q)
+    ).slice(0, 40);
+
+    if (!filtered.length) {
+      npWarehouseList.innerHTML = '<div class="autocomplete-empty">Відділення не знайдено</div>';
+      showList(npWarehouseList);
+      return;
+    }
+
+    filtered.forEach(w => {
+      const item = document.createElement('div');
+      item.className = 'autocomplete-item';
+      item.textContent = w.Description;
+      item.addEventListener('click', () => {
+        npWarehouseInput.value = w.Description;
+        hideList(npWarehouseList);
+      });
+      npWarehouseList.appendChild(item);
+    });
+    showList(npWarehouseList);
+  }
+
+  if (npCityInput) {
+    npCityInput.addEventListener('input', () => {
+      const q = npCityInput.value.trim();
+      selectedCityRef = null;
+      warehouseOptions = [];
+      if (npWarehouseInput) {
+        npWarehouseInput.value = '';
+        npWarehouseInput.disabled = true;
       }
-    }, 400);
+      hideList(npWarehouseList);
+
+      if (q.length < 2) {
+        npCityHint.textContent = 'Введіть мінімум 2 літери.';
+        hideList(npCityList);
+        return;
+      }
+      npCityHint.textContent = 'Шукаємо міста...';
+
+      if (citySearchTimeout) clearTimeout(citySearchTimeout);
+      citySearchTimeout = setTimeout(async () => {
+        try {
+          const cities = await searchCities(q);
+          const qLower = q.toLowerCase();
+          cityOptions = cities.filter(c => c.Description.toLowerCase().startsWith(qLower));
+          renderCitySuggestions(cityOptions);
+          npCityHint.textContent = cityOptions.length
+            ? 'Оберіть місто зі списку.'
+            : 'Місто не знайдено.';
+        } catch (err) {
+          console.error(err);
+          npCityHint.textContent = 'Не вдалося завантажити список міст.';
+        }
+      }, 400);
+    });
+  }
+
+  if (npWarehouseInput) {
+    npWarehouseInput.addEventListener('input', () => {
+      const q = npWarehouseInput.value.trim();
+      renderWarehouseSuggestions(q);
+    });
+
+    npWarehouseInput.addEventListener('focus', () => {
+      if (warehouseOptions.length) {
+        renderWarehouseSuggestions(npWarehouseInput.value.trim());
+      }
+    });
+  }
+
+  // Закриття списків при кліку зовні
+  document.addEventListener('click', e => {
+    if (!npCityList.contains(e.target) && e.target !== npCityInput) {
+      hideList(npCityList);
+    }
+    if (!npWarehouseList.contains(e.target) && e.target !== npWarehouseInput) {
+      hideList(npWarehouseList);
+    }
   });
 
   // ====== Відправка заявки (webhook) ======
@@ -895,13 +1051,27 @@
       return;
     }
 
+    const deliveryMethod = deliveryMethodSelect.value;
+
+    let deliveryCity = null;
+    let deliveryWarehouseOrAddress = null;
+
+    if (deliveryMethod === 'nova_poshta') {
+      deliveryCity = npCityInput ? npCityInput.value.trim() || null : null;
+      deliveryWarehouseOrAddress = npWarehouseInput ? npWarehouseInput.value.trim() || null : null;
+    } else {
+      deliveryCity = ukrCity.value.trim() || null;
+      deliveryWarehouseOrAddress = ukrAddress.value.trim() || null;
+    }
+
     const payload = {
       name,
       phone,
       email: document.getElementById('email').value.trim() || null,
       model: modelSelect.value || null,
-      city: npCityInput.value.trim() || null,
-      warehouse: npWarehouseSelect.value || null,
+      deliveryMethod,
+      deliveryCity,
+      deliveryWarehouseOrAddress,
       message: document.getElementById('message').value.trim() || null,
       page: window.location.href,
       createdAt: new Date().toISOString()
@@ -920,8 +1090,14 @@
       formStatus.textContent = 'Дякуємо! Ми скоро з вами звʼяжемося.';
       formStatus.classList.add('success');
       leadForm.reset();
-      npWarehouseSelect.innerHTML = '<option value="">Спочатку оберіть місто</option>';
-      npCityRef = null;
+      updateDeliveryBlocks();
+
+      if (npCityHint) npCityHint.textContent = 'Введіть мінімум 2 літери.';
+      selectedCityRef = null;
+      warehouseOptions = [];
+      if (npWarehouseInput) npWarehouseInput.disabled = true;
+      hideList(npCityList);
+      hideList(npWarehouseList);
     } catch (err) {
       console.error(err);
       formStatus.textContent = 'Помилка при відправці. Спробуйте ще раз.';
