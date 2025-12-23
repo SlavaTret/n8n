@@ -3,28 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <title>DOMOTEC Air Fryer – аерофритюрниці MS‑3225 та MS‑3226</title>
-  <meta name="description" content="Аерофритюрниці DOMOTEC Air Fryer MS‑3225 та MS‑3226. Готування без олії, хрумка скоринка, сучасний дизайн. Обʼєм 7–7.6 л, потужність до 4800 Вт." />
+  <meta name="description" content="Аерофритюрниці DOMOTEC Air Fryer MS‑3225 та MS‑3226 зі знижкою. Готування без олії, обʼєм 7–7.6 л, потужність до 4800 Вт. Доставка Новою поштою." />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- OG -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="DOMOTEC Air Fryer – аерофритюрниці MS‑3225 та MS‑3226">
-  <meta property="og:description" content="Дві моделі DOMOTEC Air Fryer: 7 л та 7.6 л. Готування без олії, хрумка скоринка, сучасний дизайн.">
+  <meta property="og:title" content="DOMOTEC Air Fryer – зі знижкою">
+  <meta property="og:description" content="Дві моделі DOMOTEC Air Fryer: 7 л та 7.6 л. Смачне хрумке без зайвої олії.">
   <meta property="og:image" content="https://your-domain.com/img/air-fryer-hero.png">
 
   <style>
     :root {
       --bg: #020617;
-      --bg-soft: #020617;
       --card-bg: #020617;
       --accent: #f97316;
-      --accent-soft: rgba(249, 115, 22, 0.14);
       --accent-strong: #ea580c;
+      --accent-soft: rgba(249,115,22,0.14);
       --text: #e5e7eb;
       --muted: #9ca3af;
       --border: #1f2937;
       --radius-lg: 18px;
       --radius-md: 14px;
+      --danger: #f97373;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,7 +55,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
+      padding: 10px;
       gap: 16px;
     }
     .logo {
@@ -88,7 +87,7 @@
     .btn {
       border: none;
       border-radius: 999px;
-      padding: 9px 20px;
+      padding: 9px 19px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -117,13 +116,15 @@
       background: rgba(15,23,42,1);
       color: var(--text);
     }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
 
     main { padding-bottom: 72px; }
 
     /* HERO */
-    .hero {
-      padding: 32px 0 40px;
-    }
+    .hero { padding: 32px 0 40px; }
     .hero-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
@@ -184,9 +185,7 @@
       border: 1px solid var(--border);
     }
 
-    .hero-media {
-      position: relative;
-    }
+    .hero-media { position: relative; }
     .hero-card {
       position: relative;
       border-radius: 26px;
@@ -227,10 +226,8 @@
     }
     .hero-tag strong { color: var(--accent); }
 
-    /* PRODUCTS SECTION */
-    section {
-      padding: 18px 0 0;
-    }
+    /* Section base */
+    section { padding: 18px 0 0; }
     .section-heading {
       display: flex;
       justify-content: space-between;
@@ -238,14 +235,10 @@
       gap: 12px;
       margin-bottom: 18px;
     }
-    .section-heading h2 {
-      font-size: 20px;
-    }
-    .section-heading p {
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .section-heading h2 { font-size: 20px; }
+    .section-heading p { font-size: 13px; color: var(--muted); }
 
+    /* Products */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -266,14 +259,33 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-    .product-title {
-      font-size: 16px;
-      font-weight: 600;
+    .product-title { font-size: 16px; font-weight: 600; }
+    .product-spec { font-size: 13px; color: var(--muted); }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
     }
-    .product-spec {
+    .price-new {
+      font-size: 20px;
+      font-weight: 700;
+      color: #facc15;
+    }
+    .price-old {
       font-size: 13px;
       color: var(--muted);
+      text-decoration: line-through;
     }
+    .price-badge {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
     .product-media {
       border-radius: var(--radius-md);
       background: radial-gradient(circle at top, rgba(15,23,42,0.7), rgba(15,23,42,1));
@@ -285,12 +297,13 @@
       margin: 0 auto;
       object-fit: contain;
     }
+
     .product-footer {
       margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       font-size: 12px;
       color: var(--muted);
     }
@@ -306,8 +319,14 @@
       border: 1px solid var(--border);
       font-size: 11px;
     }
+    .product-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
 
-    /* MINI BENEFITS STRIP */
+    /* Benefits strip */
     .benefits-strip {
       margin-top: 28px;
       padding: 10px 14px;
@@ -333,7 +352,7 @@
       background: var(--accent);
     }
 
-    /* POPUP */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -346,7 +365,7 @@
     }
     .modal {
       width: 100%;
-      max-width: 420px;
+      max-width: 460px;
       background: #020617;
       border-radius: 20px;
       border: 1px solid rgba(55,65,81,0.9);
@@ -361,10 +380,7 @@
       gap: 10px;
       margin-bottom: 10px;
     }
-    .modal-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
+    .modal-title { font-size: 16px; font-weight: 600; }
     .modal-close {
       border: none;
       background: transparent;
@@ -379,12 +395,14 @@
       margin-bottom: 12px;
     }
 
-    form {
-      font-size: 13px;
+    .modal-scroll {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 2px;
     }
-    .form-group {
-      margin-bottom: 10px;
-    }
+
+    form { font-size: 13px; }
+    .form-group { margin-bottom: 10px; }
     label {
       display: block;
       margin-bottom: 4px;
@@ -402,9 +420,7 @@
       outline: none;
       transition: border-color .15s, box-shadow .15s;
     }
-    input::placeholder, textarea::placeholder {
-      color: #6b7280;
-    }
+    input::placeholder, textarea::placeholder { color: #6b7280; }
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(249,115,22,0.7);
@@ -419,11 +435,15 @@
       font-size: 11px;
       color: var(--muted);
     }
-    .form-status {
-      font-size: 12px;
-    }
+    .form-status { font-size: 12px; }
     .form-status.success { color: #22c55e; }
-    .form-status.error { color: #f97373; }
+    .form-status.error { color: var(--danger); }
+
+    .np-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr;
+      gap: 8px;
+    }
 
     footer {
       padding: 18px 0 26px;
@@ -443,6 +463,7 @@
         border-radius: 16px;
         align-items: flex-start;
       }
+      .np-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -469,7 +490,7 @@
     <div class="container hero-grid">
       <div>
         <div class="eyebrow">
-          <span>Новинка</span>
+          <span>-25% зараз</span>
           Аерофритюрниці DOMOTEC • до 200°C без олії
         </div>
         <h1 class="hero-title">
@@ -477,29 +498,27 @@
         </h1>
         <p class="hero-sub">
           Дві моделі DOMOTEC Air Fryer: 7 л для щоденного використання
-          та 7.6 л з двома секціями – для великої сім'ї та гостей.
+          та 7.6 л із двома секціями – для великої сімʼї та гостей.
         </p>
 
         <div class="hero-cta">
           <button class="btn btn-primary" data-open-modal>
-            Підібрати модель
+            Оформити зі знижкою
           </button>
           <button class="btn btn-ghost" onclick="document.getElementById('models').scrollIntoView({behavior:'smooth'});">
-            Подивитись характеристики
+            Подивитись моделі
           </button>
         </div>
 
         <div class="hero-meta">
           <span class="hero-chip">Без олії або з мінімальною кількістю</span>
-          <span class="hero-chip">Температура до 200°C</span>
-          <span class="hero-chip">Потужність до 4800 Вт</span>
+          <span class="hero-chip">Доставка Новою поштою</span>
         </div>
       </div>
 
       <div class="hero-media">
         <div class="hero-card">
           <div class="hero-main-img">
-            <!-- Сюди постав PNG з прозорим фоном для односекційної -->
             <img src="https://your-domain.com/img/ms-3225-transparent.png"
                  alt="Аерофритюрниця DOMOTEC Air Fryer MS‑3225" loading="lazy">
           </div>
@@ -521,20 +540,25 @@
     <div class="container">
       <div class="section-heading">
         <h2>Дві моделі – під різні задачі</h2>
-        <p>Коротко та по суті: обʼєм, потужність і для кого підходить.</p>
+        <p>Коротко: обʼєм, потужність, для кого та скільки коштує.</p>
       </div>
 
       <div class="products-grid">
         <!-- MS-3225 -->
-        <article class="product-card">
+        <article class="product-card" data-product="ms3225">
           <div class="product-tag">MS‑3225 · 7 л</div>
           <h3 class="product-title">Односекційна аерофритюрниця DOMOTEC</h3>
           <p class="product-spec">
             7 л · 3500 Вт · до 200°C · таймер до 3 годин.
           </p>
 
+          <div class="price-row">
+            <div class="price-new">2 200 грн</div>
+            <div class="price-old">2 900 грн</div>
+            <div class="price-badge">акція</div>
+          </div>
+
           <div class="product-media">
-            <!-- PNG коробки або приладу -->
             <img src="https://your-domain.com/img/ms-3225-box-transparent.png"
                  alt="Коробка DOMOTEC Air Fryer MS‑3225">
           </div>
@@ -542,21 +566,32 @@
           <div class="product-footer">
             <div class="product-badges">
               <span class="pill">3–5 осіб</span>
-              <span>Щоденне приготування на сімʼю</span>
+              <span>Щоденне приготування для сімʼї</span>
             </div>
-            <button class="btn btn-primary" data-open-modal data-model="DOMOTEC MS-3225 7 л">
-              Обрати
-            </button>
+            <div class="product-actions">
+              <button class="btn btn-primary btn-sm" data-open-modal data-model="DOMOTEC MS-3225 7 л">
+                Замовити
+              </button>
+              <button class="btn btn-ghost btn-sm" data-open-details data-product="ms3225">
+                Деталі
+              </button>
+            </div>
           </div>
         </article>
 
         <!-- MS-3226 -->
-        <article class="product-card">
+        <article class="product-card" data-product="ms3226">
           <div class="product-tag">MS‑3226 · 7.6 л</div>
           <h3 class="product-title">Двосекційна аерофритюрниця DOMOTEC</h3>
           <p class="product-spec">
             7.6 л · 4800 Вт · 2 секції · таймер до 60 хв.
           </p>
+
+          <div class="price-row">
+            <div class="price-new">3 000 грн</div>
+            <div class="price-old">4 500 грн</div>
+            <div class="price-badge">акція</div>
+          </div>
 
           <div class="product-media">
             <img src="https://your-domain.com/img/ms-3226-box-transparent.png"
@@ -568,68 +603,103 @@
               <span class="pill">5+ осіб</span>
               <span>Дві страви одночасно без змішування смаків</span>
             </div>
-            <button class="btn btn-primary" data-open-modal data-model="DOMOTEC MS-3226 7.6 л · 2 секції">
-              Обрати
-            </button>
+            <div class="product-actions">
+              <button class="btn btn-primary btn-sm" data-open-modal data-model="DOMOTEC MS-3226 7.6 л · 2 секції">
+                Замовити
+              </button>
+              <button class="btn btn-ghost btn-sm" data-open-details data-product="ms3226">
+                Деталі
+              </button>
+            </div>
           </div>
         </article>
       </div>
 
-      <!-- коротко про переваги -->
       <div id="benefits" class="benefits-strip">
         <span><span class="dot"></span> До 90% менше олії</span>
         <span><span class="dot"></span> Хрумка скоринка та соковите всередині</span>
-        <span><span class="dot"></span> Знімні частини – легко мити</span>
+        <span><span class="dot"></span> Знімні кошики – легко мити</span>
+        <span><span class="dot"></span> Доставка Новою поштою по Україні</span>
       </div>
     </div>
   </section>
 </main>
 
-<!-- MODAL POPUP -->
+<!-- MODAL ORDER -->
 <div class="modal-backdrop" id="orderModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-header">
-      <div>
-        <div class="modal-title" id="modalTitle">Залиште заявку</div>
-      </div>
-      <button class="modal-close" type="button" aria-label="Закрити" data-close-modal>×</button>
+      <div class="modal-title" id="modalTitle">Залиште заявку</div>
+      <button class="modal-close" type="button" aria-label="Закрити" data-close-modal>&times;</button>
     </div>
     <p class="modal-sub">
-      Ми перетелефонуємо, підберемо модель та підкажемо щодо доставки.
+      Ми перетелефонуємо, уточнимо замовлення та оформимо доставку Новою поштою.
     </p>
 
-    <form id="leadForm" novalidate>
-      <div class="form-group">
-        <label for="name">Імʼя *</label>
-        <input type="text" id="name" name="name" required placeholder="Наприклад, Олександр">
-      </div>
-      <div class="form-group">
-        <label for="phone">Телефон *</label>
-        <input type="tel" id="phone" name="phone" required placeholder="+380...">
-      </div>
-      <div class="form-group">
-        <label for="email">Email (необовʼязково)</label>
-        <input type="email" id="email" name="email" placeholder="example@gmail.com">
-      </div>
-      <div class="form-group">
-        <label for="model">Модель</label>
-        <select id="model" name="model">
-          <option value="">Ще думаю</option>
-          <option value="DOMOTEC MS-3225 7 л">DOMOTEC MS‑3225, 7 л</option>
-          <option value="DOMOTEC MS-3226 7.6 л · 2 секції">DOMOTEC MS‑3226, 7.6 л, 2 секції</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="message">Коментар</label>
-        <textarea id="message" name="message" placeholder="Напишіть, що плануєте готувати або поставте запитання"></textarea>
-      </div>
+    <div class="modal-scroll">
+      <form id="leadForm" novalidate>
+        <div class="form-group">
+          <label for="name">Імʼя *</label>
+          <input type="text" id="name" name="name" required placeholder="Наприклад, Олександр">
+        </div>
+        <div class="form-group">
+          <label for="phone">Телефон *</label>
+          <input type="tel" id="phone" name="phone" required placeholder="+380...">
+        </div>
+        <div class="form-group">
+          <label for="email">Email (необовʼязково)</label>
+          <input type="email" id="email" name="email" placeholder="example@gmail.com">
+        </div>
 
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Надіслати</button>
-        <div id="formStatus" class="form-status"></div>
-        <p>Натискаючи «Надіслати», ви погоджуєтеся на обробку персональних даних.</p>
-      </div>
-    </form>
+        <div class="form-group">
+          <label for="model">Модель</label>
+          <select id="model" name="model">
+            <option value="">Ще думаю</option>
+            <option value="DOMOTEC MS-3225 7 л">DOMOTEC MS‑3225, 7 л</option>
+            <option value="DOMOTEC MS-3226 7.6 л · 2 секції">DOMOTEC MS‑3226, 7.6 л, 2 секції</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Доставка Новою поштою</label>
+          <div class="np-row">
+            <div>
+              <input type="text" id="npCity" placeholder="Місто (почніть вводити)" autocomplete="off">
+              <small id="npCityHint" style="color:var(--muted);font-size:11px;">Виберіть місто зі списку.</small>
+            </div>
+            <div>
+              <select id="npWarehouse">
+                <option value="">Спочатку оберіть місто</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Коментар</label>
+          <textarea id="message" name="message" placeholder="Напишіть, куди зручно відправити, та бажаний час дзвінка"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Надіслати</button>
+          <div id="formStatus" class="form-status"></div>
+          <p>Натискаючи «Надіслати», ви погоджуєтеся на обробку персональних даних.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETAILS (для обох моделей) -->
+<div class="modal-backdrop" id="detailsModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="detailsTitle">Характеристики</div>
+      <button class="modal-close" type="button" aria-label="Закрити" data-close-details>&times;</button>
+    </div>
+    <div class="modal-scroll" id="detailsContent">
+      <!-- контент вставляється через JS -->
+    </div>
   </div>
 </div>
 
@@ -642,44 +712,176 @@
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  const modal = document.getElementById('orderModal');
+  const orderModal = document.getElementById('orderModal');
+  const detailsModal = document.getElementById('detailsModal');
   const modelSelect = document.getElementById('model');
-  const openBtns = document.querySelectorAll('[data-open-modal]');
-  const closeBtns = document.querySelectorAll('[data-close-modal]');
+  const openOrderBtns = document.querySelectorAll('[data-open-modal]');
+  const closeOrderBtns = document.querySelectorAll('[data-close-modal]');
+  const openDetailsBtns = document.querySelectorAll('[data-open-details]');
+  const closeDetailsBtns = document.querySelectorAll('[data-close-details]');
+  const detailsContent = document.getElementById('detailsContent');
   const formStatus = document.getElementById('formStatus');
   const leadForm = document.getElementById('leadForm');
 
-  function openModal(prefillModel) {
-    if (prefillModel && modelSelect) {
-      modelSelect.value = prefillModel;
-    }
-    modal.style.display = 'flex';
-    modal.setAttribute('aria-hidden', 'false');
+  function openOrderModal(prefillModel) {
+    if (prefillModel && modelSelect) modelSelect.value = prefillModel;
+    orderModal.style.display = 'flex';
+    orderModal.setAttribute('aria-hidden', 'false');
+  }
+  function closeOrderModal() {
+    orderModal.style.display = 'none';
+    orderModal.setAttribute('aria-hidden', 'true');
+  }
+  function openDetailsModal(productKey) {
+    const html = productKey === 'ms3225'
+      ? `
+        <p class="modal-sub"><strong>DOMOTEC Air Fryer MS‑3225, 7 л, 3500 Вт</strong></p>
+        <ul style="font-size:13px;color:${'var(--muted)'};margin-bottom:10px;padding-left:18px;">
+          <li>Обʼєм кошика: 7 л</li>
+          <li>Потужність: 3500 Вт</li>
+          <li>Температурний діапазон: 80–200°C</li>
+          <li>Таймер: до 3 годин</li>
+          <li>Тип керування: механічне</li>
+          <li>Два нагрівальні елементи для рівномірного прогріву</li>
+          <li>Корпус: метал / пластик</li>
+        </ul>
+        <p style="font-size:13px;color:${'var(--muted)'};">
+          Ідеальна для сімʼї 3–5 осіб: картопля фрі, крильця, овочі, мʼясо. 
+          Готує майже без олії, легко миється завдяки знімним частинам.
+        </p>
+      `
+      : `
+        <p class="modal-sub"><strong>DOMOTEC Air Fryer MS‑3226, 7.6 л, 4800 Вт</strong></p>
+        <ul style="font-size:13px;color:${'var(--muted)'};margin-bottom:10px;padding-left:18px;">
+          <li>Загальний обʼєм: 7.6 л</li>
+          <li>Потужність: 4800 Вт</li>
+          <li>Дві незалежні секції для різних страв</li>
+          <li>Температурний діапазон: 80–200°C</li>
+          <li>Таймер: до 60 хвилин</li>
+          <li>Тип керування: механічне</li>
+          <li>Два нагрівальні елементи</li>
+          <li>Корпус: метал / пластик</li>
+        </ul>
+        <p style="font-size:13px;color:${'var(--muted)'};">
+          Підходить для 5+ осіб, свят, вечірок. 
+          Можна одночасно готувати мʼясо та гарнір без змішування смаків.
+        </p>
+      `;
+    detailsContent.innerHTML = html;
+    detailsModal.style.display = 'flex';
+    detailsModal.setAttribute('aria-hidden', 'false');
+  }
+  function closeDetailsModal() {
+    detailsModal.style.display = 'none';
+    detailsModal.setAttribute('aria-hidden', 'true');
   }
 
-  function closeModal() {
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-  }
-
-  openBtns.forEach(btn => {
+  openOrderBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const m = btn.getAttribute('data-model');
-      openModal(m);
+      openOrderModal(m);
     });
   });
+  closeOrderBtns.forEach(btn => btn.addEventListener('click', closeOrderModal));
+  orderModal.addEventListener('click', e => { if (e.target === orderModal) closeOrderModal(); });
 
-  closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
-  modal.addEventListener('click', e => {
-    if (e.target === modal) closeModal();
+  openDetailsBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-product');
+      openDetailsModal(key);
+    });
   });
+  closeDetailsBtns.forEach(btn => btn.addEventListener('click', closeDetailsModal));
+  detailsModal.addEventListener('click', e => { if (e.target === detailsModal) closeDetailsModal(); });
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') {
-      closeModal();
+    if (e.key === 'Escape') {
+      if (orderModal.getAttribute('aria-hidden') === 'false') closeOrderModal();
+      if (detailsModal.getAttribute('aria-hidden') === 'false') closeDetailsModal();
     }
   });
 
-  // Відправка вебхука
+  // ====== НОВА ПОШТА API ======
+  const NP_API_KEY = '4caed09a8d94d4237b5edf1cad4533a1'; // <-- свій ключ
+  const npCityInput = document.getElementById('npCity');
+  const npWarehouseSelect = document.getElementById('npWarehouse');
+  const npCityHint = document.getElementById('npCityHint');
+  let npCityRef = null;
+  let citySearchTimeout = null;
+
+  async function searchCities(query) {
+    const body = {
+      apiKey: NP_API_KEY,
+      modelName: "Address",
+      calledMethod: "getCities",
+      methodProperties: { FindByString: query, Limit: 20 }
+    };
+    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    return (data && data.data) ? data.data : [];
+  }
+
+  async function loadWarehouses(cityRef) {
+    const body = {
+      apiKey: NP_API_KEY,
+      modelName: "AddressGeneral",
+      calledMethod: "getWarehouses",
+      methodProperties: { CityRef: cityRef, Limit: 50 }
+    };
+    const res = await fetch("https://api.novaposhta.ua/v2.0/json/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    return (data && data.data) ? data.data : [];
+  }
+
+  npCityInput.addEventListener('input', () => {
+    const q = npCityInput.value.trim();
+    npCityRef = null;
+    npWarehouseSelect.innerHTML = '<option value="">Спочатку оберіть місто</option>';
+    if (q.length < 2) {
+      npCityHint.textContent = 'Введіть мінімум 2 літери.';
+      return;
+    }
+    npCityHint.textContent = 'Шукаємо міста...';
+
+    if (citySearchTimeout) clearTimeout(citySearchTimeout);
+    citySearchTimeout = setTimeout(async () => {
+      try {
+        const cities = await searchCities(q);
+        if (!cities.length) {
+          npCityHint.textContent = 'Місто не знайдено. Перевірте написання.';
+          return;
+        }
+        // Для простоти — беремо перше співпадіння
+        const city = cities[0];
+        npCityRef = city.Ref;
+        npCityInput.value = city.Description;
+        npCityHint.textContent = 'Місто вибрано. Завантажуємо відділення...';
+
+        const whList = await loadWarehouses(npCityRef);
+        npWarehouseSelect.innerHTML = '<option value="">Оберіть відділення</option>';
+        whList.forEach(w => {
+          const opt = document.createElement('option');
+          opt.value = w.Description;
+          opt.textContent = w.Description;
+          npWarehouseSelect.appendChild(opt);
+        });
+        npCityHint.textContent = 'Оберіть відділення зі списку.';
+      } catch (err) {
+        console.error(err);
+        npCityHint.textContent = 'Не вдалося завантажити список міст.';
+      }
+    }, 400);
+  });
+
+  // ====== Відправка заявки (webhook) ======
   leadForm.addEventListener('submit', async e => {
     e.preventDefault();
     formStatus.textContent = '';
@@ -698,6 +900,8 @@
       phone,
       email: document.getElementById('email').value.trim() || null,
       model: modelSelect.value || null,
+      city: npCityInput.value.trim() || null,
+      warehouse: npWarehouseSelect.value || null,
       message: document.getElementById('message').value.trim() || null,
       page: window.location.href,
       createdAt: new Date().toISOString()
@@ -716,6 +920,8 @@
       formStatus.textContent = 'Дякуємо! Ми скоро з вами звʼяжемося.';
       formStatus.classList.add('success');
       leadForm.reset();
+      npWarehouseSelect.innerHTML = '<option value="">Спочатку оберіть місто</option>';
+      npCityRef = null;
     } catch (err) {
       console.error(err);
       formStatus.textContent = 'Помилка при відправці. Спробуйте ще раз.';
