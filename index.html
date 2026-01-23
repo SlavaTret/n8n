@@ -479,20 +479,6 @@
         <h2>🔍 Пошук платежу LiqPay</h2>
         <form id="searchForm">
             <div class="form-group">
-                <button class="open-zammad-chat">Chat with us</button>
-
-<script src="https://zammad.numotamo.com.ua/assets/chat/chat-no-jquery.min.js"></script>
-<script>
-(function() {
-  new ZammadChat({
-    title: '<string>Служба турботи</string>',
-    background: '#ec174d',
-    fontSize: '14px',
-    chatId: 1,
-    show: false
-  });
-})();
-</script>
                 <label for="merchant">Мерчант:</label>
                 <select id="merchant" name="merchant" required>
                     <option value="merchant2" selected>i56318722651 (Concert.ua/ТОВ "Білетик")</option>
@@ -592,7 +578,18 @@
         
         <div id="result" class="result"></div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://zammad.numotamo.com.ua/assets/chat/chat.min.js"></script>
+<script>
+$(function() {
+  new ZammadChat({
+    title: '<string>Служба турботи</string>',
+    background: '#ec174d',
+    fontSize: '14px',
+    chatId: 1
+  });
+});
+</script>
     <script>
         const PASSWORD_HASH = '39f7fa0d14cb59a63e2ffe0382deebe19450566242569dc51f77cce8345fe76a';
         
