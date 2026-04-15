@@ -481,11 +481,8 @@
             <div class="form-group">
                 <label for="merchant">Мерчант:</label>
                 <select id="merchant" name="merchant" required>
-                    <option value="merchant2" selected>i56318722651 (Concert.ua/ТОВ "Білетик")</option>
-                    <option value="merchant1">i60788791483 (Concert.ua/Init)</option>
-                    <option value="merchant3">i75634154909 (v-Ticket 3S/Init)</option>
-                    <option value="merchant4">i95937709038 (v-Ticket 3S)</option>
-                    <option value="merchant5">i29695385168 (Concert.ua/Disc 4)</option>
+                    <option value="merchant1" selected>i7532081383 (Numotamo.com / Основа)</option>
+                    <option value="merchant2">i44798243648 (Numotamo.com / Split)</option>
                 </select>
             </div>
             
@@ -496,7 +493,7 @@
                         type="text" 
                         id="date_from" 
                         name="date_from" 
-                        placeholder="01.12.2025" 
+                        placeholder="16.02.2026" 
                         maxlength="10"
                         required
                     >
@@ -505,7 +502,7 @@
                         type="text" 
                         id="date_to" 
                         name="date_to" 
-                        placeholder="07.12.2025" 
+                        placeholder="26.02.2026" 
                         maxlength="10"
                         required
                     >
@@ -834,11 +831,13 @@ $(function() {
             }
             
             const merchantNames = {
-                'merchant1': 'i60788791483 (Concert.ua/Init)',
-                'merchant2': 'i56318722651 (Concert.ua/ТОВ "Білетик")',
-                'merchant3': 'i75634154909 (v-Ticket 3S/Init)',
-                'merchant4': 'i95937709038 (v-Ticket 3S)',
-                'merchant5': 'i29695385168 (Concert.ua/Disc 4)',
+                'merchant1': 'i7532081383 (Numotamo.com / Основна)',
+                'merchant2': 'i44798243648 (Numotamo.com / Split)',
+                'merchant3': 'i60788791483 (Concert.ua/Init)',
+                'merchant4': 'i56318722651 (Concert.ua/ТОВ "Білетик")',
+                'merchant5': 'i75634154909 (v-Ticket 3S/Init)',
+                'merchant6': 'i95937709038 (v-Ticket 3S)',
+                'merchant7': 'i29695385168 (Concert.ua/Disc 4)',
             };
             const merchantName = merchantNames[merchant];
             
